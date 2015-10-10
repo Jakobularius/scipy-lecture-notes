@@ -325,7 +325,7 @@ convention:
 
 
     For the sake of standardization, the `Docstring
-    Conventions <http://www.python.org/dev/peps/pep-0257>`_ webpage
+    Conventions <https://www.python.org/dev/peps/pep-0257>`_ webpage
     documents the semantics and conventions associated with Python
     docstrings.
 
@@ -376,7 +376,9 @@ Exercises
 .. topic:: Exercise: Quicksort
     :class: green
 
-    Implement the quicksort algorithm, as defined by wikipedia::
+    Implement the quicksort algorithm, as defined by wikipedia
+
+.. parsed-literal::
 
     function quicksort(array)
         var list less, greater

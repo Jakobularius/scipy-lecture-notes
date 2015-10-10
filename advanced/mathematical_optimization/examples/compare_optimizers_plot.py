@@ -1,3 +1,11 @@
+"""
+Plotting the comparison of optimizers
+======================================
+
+Plots the results from the comparison of optimizers.
+
+"""
+
 import pickle
 
 import numpy as np

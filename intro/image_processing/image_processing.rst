@@ -1,3 +1,7 @@
+.. for doctests
+   >>> import matplotlib.pyplot as plt
+   >>> plt.switch_backend("Agg")
+
 The submodule dedicated to image processing in scipy is :mod:`scipy.ndimage`. ::
 
     >>> from scipy import ndimage
@@ -25,19 +29,18 @@ Changing orientation, resolution, .. ::
    :align: center
    :scale: 70
 
+::
 
-.. sourcecode:: ipython
+    >>> plt.subplot(151)    # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at 0x...>
 
-    In [35]: subplot(151)
-    Out[35]: <matplotlib.axes.AxesSubplot object at 0x925f46c>
+    >>> plt.imshow(shifted_lena, cmap=plt.cm.gray)    # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at 0x...>
 
-    In [36]: pl.imshow(shifted_lena, cmap=cm.gray)
-    Out[36]: <matplotlib.image.AxesImage object at 0x9593f6c>
+    >>> plt.axis('off')
+    (-0.5, 511.5, 511.5, -0.5)
 
-    In [37]: axis('off')
-    Out[37]: (-0.5, 511.5, 511.5, -0.5)
-
-    In [39]: # etc.
+    >>> # etc.
 
 
 Image filtering
@@ -49,11 +52,11 @@ Image filtering
     >>> lena = misc.lena()
     >>> import numpy as np
     >>> noisy_lena = np.copy(lena).astype(np.float)
-    >>> noisy_lena += lena.std()*0.5*np.random.standard_normal(lena.shape)
+    >>> noisy_lena += lena.std() * 0.5 * np.random.standard_normal(lena.shape)
     >>> blurred_lena = ndimage.gaussian_filter(noisy_lena, sigma=3)
     >>> median_lena = ndimage.median_filter(blurred_lena, size=5)
     >>> from scipy import signal
-    >>> wiener_lena = signal.wiener(blurred_lena, (5,5))
+    >>> wiener_lena = signal.wiener(blurred_lena, (5, 5))
 
 .. figure:: image_processing/filtered_lena.png
    :align: center
@@ -86,9 +89,9 @@ in order to modify other geometrical structures.
 Let us first generate a structuring element ::
 
     >>> el = ndimage.generate_binary_structure(2, 1)
-    >>> el
+    >>> el # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     array([[False, True, False],
-           [True, True, True],
+           [...True, True, True],
            [False, True, False]], dtype=bool)
     >>> el.astype(np.int)
     array([[0, 1, 0],
@@ -97,7 +100,7 @@ Let us first generate a structuring element ::
 
 * **Erosion** ::
 
-    >>> a = np.zeros((7,7), dtype=np.int)
+    >>> a = np.zeros((7, 7), dtype=np.int)
     >>> a[1:6, 2:5] = 1
     >>> a
     array([[0, 0, 0, 0, 0, 0, 0],
@@ -144,8 +147,9 @@ Let us first generate a structuring element ::
 
 * **Opening** ::
 
-    >>> a = np.zeros((5,5), dtype=np.int)
-    >>> a[1:4, 1:4] = 1; a[4, 4] = 1
+    >>> a = np.zeros((5, 5), dtype=np.int)
+    >>> a[1:4, 1:4] = 1
+    >>> a[4, 4] = 1
     >>> a
     array([[0, 0, 0, 0, 0],
            [0, 1, 1, 1, 0],
@@ -153,7 +157,7 @@ Let us first generate a structuring element ::
            [0, 1, 1, 1, 0],
            [0, 0, 0, 0, 1]])
     >>> # Opening removes small objects
-    >>> ndimage.binary_opening(a, structure=np.ones((3,3))).astype(np.int)
+    >>> ndimage.binary_opening(a, structure=np.ones((3, 3))).astype(np.int)
     array([[0, 0, 0, 0, 0],
            [0, 1, 1, 1, 0],
            [0, 1, 1, 1, 0],
@@ -180,7 +184,7 @@ image. ::
 
     >>> a = np.zeros((50, 50))
     >>> a[10:-10, 10:-10] = 1
-    >>> a += 0.25*np.random.standard_normal(a.shape)
+    >>> a += 0.25 * np.random.standard_normal(a.shape)
     >>> mask = a>=0.5
     >>> opened_mask = ndimage.binary_opening(mask)
     >>> closed_mask = ndimage.binary_closing(opened_mask)
@@ -200,9 +204,9 @@ For *gray-valued* images, eroding (resp. dilating) amounts to replacing
 a pixel by the minimal (resp. maximal) value among pixels covered by the
 structuring element centered on the pixel of interest. ::
 
-    >>> a = np.zeros((7,7), dtype=np.int)
+    >>> a = np.zeros((7, 7), dtype=np.int)
     >>> a[1:6, 1:6] = 3
-    >>> a[4,4] = 2; a[2,3] = 1
+    >>> a[4, 4] = 2; a[2, 3] = 1
     >>> a
     array([[0, 0, 0, 0, 0, 0, 0],
            [0, 3, 3, 3, 3, 3, 0],
@@ -211,7 +215,7 @@ structuring element centered on the pixel of interest. ::
            [0, 3, 3, 3, 2, 3, 0],
            [0, 3, 3, 3, 3, 3, 0],
            [0, 0, 0, 0, 0, 0, 0]])
-    >>> ndimage.grey_erosion(a, size=(3,3))
+    >>> ndimage.grey_erosion(a, size=(3, 3))
     array([[0, 0, 0, 0, 0, 0, 0],
            [0, 0, 0, 0, 0, 0, 0],
            [0, 0, 1, 1, 1, 0, 0],
@@ -227,7 +231,7 @@ Measurements on images
 Let us first generate a nice synthetic binary image. ::
 
     >>> x, y = np.indices((100, 100))
-    >>> sig = np.sin(2*np.pi*x/50.)*np.sin(2*np.pi*y/50.)*(1+x*y/50.**2)**2
+    >>> sig = np.sin(2*np.pi*x/50.) * np.sin(2*np.pi*y/50.) * (1+x*y/50.**2)**2
     >>> mask = sig > 1
 
 Now we look for various information about the objects in the image::
@@ -235,14 +239,14 @@ Now we look for various information about the objects in the image::
     >>> labels, nb = ndimage.label(mask)
     >>> nb
     8
-    >>> areas = ndimage.sum(mask, labels, xrange(1, labels.max()+1))
+    >>> areas = ndimage.sum(mask, labels, range(1, labels.max()+1))
     >>> areas
     array([ 190.,   45.,  424.,  278.,  459.,  190.,  549.,  424.])
-    >>> maxima = ndimage.maximum(sig, labels, xrange(1, labels.max()+1))
+    >>> maxima = ndimage.maximum(sig, labels, range(1, labels.max()+1))
     >>> maxima
     array([  1.80238238,   1.13527605,   5.51954079,   2.49611818,
              6.71673619,   1.80238238,  16.76547217,   5.51954079])
-    >>> ndimage.find_objects(labels==4)
+    >>> ndimage.find_objects(labels==4) # doctest: +SKIP
     [(slice(30L, 48L, None), slice(30L, 48L, None))]
     >>> sl = ndimage.find_objects(labels==4)
     >>> import pylab as pl

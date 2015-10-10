@@ -2,7 +2,7 @@
 scikit-learn: machine learning in Python
 ========================================
 
-:author: Fabian Pedregosa, Gael Varoquaux
+**Authors**: *Fabian Pedregosa, Gael Varoquaux*
 
 .. image:: scikit-learn-logo.png
    :scale: 40
@@ -20,18 +20,13 @@ scikit-learn: machine learning in Python
    :local:
    :depth: 2
 
-.. warning::
+.. For doctests
+   >>> import numpy as np
+   >>> np.random.seed(0)
+   >>> # For doctest on headless environments
+   >>> from matplotlib import pyplot as plt
+   >>> plt.switch_backend('Agg')
 
-   As of version 0.9 (released in September 2011), the import path for
-   scikit-learn has changed from `scikits.learn` to `sklearn`
-
-..
-  For doctesting, to avoid having figures poping up
-  
-  >>> import matplotlib
-  >>> matplotlib.use('svg')
-  >>> import numpy as np
-  >>> np.random.seed(0)
 
 Loading an example dataset
 ==========================
@@ -52,21 +47,17 @@ Loading an example dataset
 First we will load some data to play with. The data we will use is a
 very simple flower database known as the Iris dataset.
 
-We have 150 observations of the iris flower specifying some
-measurements: sepal length, sepal width, petal length and petal width
-together with its subtype: *Iris setosa*, *Iris versicolor*, *Iris
-virginica*.
+We have 150 observations of the iris flower specifying some measurements:
+sepal length, sepal width, petal length and petal width together
+with its subtype: *Iris setosa*, *Iris versicolor*, *Iris virginica*.
 
 .. For now, a dataset is just a matrix of floating-point numbers,
 .. together with a class value.
 
-To load the dataset into a Python object:
+To load the dataset into a Python object::
 
-
-::
-
-  >>> from sklearn import datasets
-  >>> iris = datasets.load_iris()
+    >>> from sklearn import datasets
+    >>> iris = datasets.load_iris()
 
 This data is stored in the ``.data`` member, which
 is a ``(n_samples, n_features)`` array.
@@ -75,7 +66,7 @@ is a ``(n_samples, n_features)`` array.
     (150, 4)
 
 The class of each observation is stored in the ``.target`` attribute of the
-dataset. This is an integer 1D array of length ``n_samples``:
+dataset. This is an integer 1D array of length ``n_samples``::
 
     >>> iris.target.shape
     (150,)
@@ -91,7 +82,7 @@ dataset. This is an integer 1D array of length ``n_samples``:
         :align: right
 
     The digits dataset consists of 1797 images, where each one is an 8x8
-    pixel image representing a hand-written digit ::
+    pixel image representing a hand-written digit::
 
         >>> digits = datasets.load_digits()
         >>> digits.images.shape
@@ -101,7 +92,7 @@ dataset. This is an integer 1D array of length ``n_samples``:
         <matplotlib.image.AxesImage object at ...>
 
     To use this dataset with the scikit, we transform each 8x8 image
-    into a vector of length 64 ::
+    into a vector of length 64::
 
         >>> data = digits.images.reshape((digits.images.shape[0], -1))
 
@@ -124,7 +115,7 @@ Once we have learned from the data, we can use our model to predict the
 most likely outcome on unseen data:
 
     >>> clf.predict([[ 5.0,  3.6,  1.3,  0.25]])
-    array([0], dtype=int32)
+    array([0])
 
 .. note:: 
    
@@ -219,11 +210,11 @@ The most commonly used ones are ``svm.SVC``, ``svm.NuSVC`` and ``svm.LinearSVC``
 "SVC" stands for Support Vector Classifier (there also exist SVMs for regression,
 which are called "SVR" in ``scikit-learn``).
 
-.. topic:: **Excercise**
+.. topic:: **Exercise**
    :class: green
 
    Train an ``svm.SVC`` on the digits dataset. Leave out the
-   last 10% and test prediction performance on these observations.
+   last 10%, and test prediction performance on these observations.
 
 
 
@@ -322,12 +313,12 @@ object API and several additional features, including smart initialization.)
 
     >>> from sklearn import cluster, datasets
     >>> iris = datasets.load_iris()
-    >>> k_means = cluster.KMeans(k=3)
+    >>> k_means = cluster.KMeans(n_clusters=3)
     >>> k_means.fit(iris.data) # doctest: +ELLIPSIS
-    KMeans(copy_x=True, init='k-means++', k=3, ...
-    >>> print k_means.labels_[::10]
+    KMeans(...)
+    >>> print(k_means.labels_[::10])
     [1 1 1 1 1 0 0 0 0 0 2 2 2 2 2]
-    >>> print iris.target[::10]
+    >>> print(iris.target[::10])
     [0 0 0 0 0 1 1 1 1 1 2 2 2 2 2]
 
 .. |cluster_iris_truth| image:: cluster_iris_truth.png
@@ -373,14 +364,14 @@ object API and several additional features, including smart initialization.)
 .. topic:: **Application to Image Compression**
 
     Clustering can be seen as a way of choosing a small number of
-    observations from the information. For instance, this can be used
-    to posterize an image (conversion of a continuous gradation of
-    tone to several regions of fewer tones)::
+    information from the observations (like a projection on a smaller space).
+    For instance, this can be used to posterize an image
+    (conversion of a continuous gradation of tone to several regions of fewer tones)::
 
      >>> from scipy import misc
      >>> lena = misc.lena().astype(np.float32)
-     >>> X = lena.reshape((-1, 1)) # We need an (n_sample, n_feature) array
-     >>> k_means = cluster.KMeans(n_clusters=5)
+     >>> X = lena.reshape((-1, 1))  # We need an (n_sample, n_feature) array
+     >>> K = k_means = cluster.KMeans(n_clusters=5)  # 5 clusters
      >>> k_means.fit(X) # doctest: +ELLIPSIS
      KMeans(...)
      >>> values = k_means.cluster_centers_.squeeze()
@@ -400,7 +391,7 @@ object API and several additional features, including smart initialization.)
 
         - Raw image
 
-        - K-means quantization
+        - K-means quantization (K=5)
 
 
 
@@ -470,15 +461,11 @@ classification.
    :scale: 70
 
 
+Stripped-down version of the `face recognition example 
+<http://scikit-learn.org/stable/auto_examples/applications/face_recognition.html>`_:
+
 .. sourcecode:: python
 
-    """
-    Stripped-down version of the face recognition example by Olivier Grisel
-    
-    http://scikit-learn.org/dev/auto_examples/applications/face_recognition.html
-    
-    ## original shape of images: 50, 37
-    """
     import numpy as np
     import pylab as pl
     from sklearn import cross_val, datasets, decomposition, svm
@@ -509,7 +496,7 @@ classification.
     # ..
     # .. predict on new images ..
     for i in range(10):
-        print lfw_people.target_names[clf.predict(X_test_pca[i])[0]]
+        print(lfw_people.target_names[clf.predict(X_test_pca[i])[0]])
         _ = pl.imshow(X_test[i].reshape(50, 37), cmap=pl.cm.gray)
         _ = raw_input()
     
@@ -606,11 +593,10 @@ estimator during the construction and exposes an estimator API::
     >>> clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), 
     ...                    n_jobs=-1)
     >>> clf.fit(digits.data[:1000], digits.target[:1000]) # doctest: +ELLIPSIS
-    GridSearchCV(cv=None,
-           estimator=SVC(C=1.0, ...
-    >>> clf.best_score
-    0.98899798001594419
-    >>> clf.best_estimator.gamma
+    GridSearchCV(cv=None,...)
+    >>> clf.best_score_  # doctest: +ELLIPSIS
+    0.9...
+    >>> clf.best_estimator_.gamma
     0.00059948425031894088
 
 
@@ -633,14 +619,11 @@ automatically by cross-validation::
     >>> diabetes = datasets.load_diabetes()
     >>> X_diabetes = diabetes.data
     >>> y_diabetes = diabetes.target
-    >>> lasso.fit(X_diabetes, y_diabetes)
-    LassoCV(alphas=array([ 2.14804,  2.00327, ...,  0.0023 ,  0.00215]),
-        copy_X=True, cv=None, eps=0.001, fit_intercept=True, max_iter=1000,
-        n_alphas=100, normalize=False, precompute='auto', tol=0.0001,
-        verbose=False)
+    >>> lasso.fit(X_diabetes, y_diabetes) # doctest: +ELLIPSIS
+    LassoCV(alphas=None, ...)
     >>> # The estimator chose automatically its lambda:
-    >>> lasso.alpha # doctest: +ELLIPSIS
-    0.013...
+    >>> lasso.alpha_ # doctest: +ELLIPSIS
+    0.012...
 
 These estimators are called similarly to their counterparts, with 'CV'
 appended to their name.
@@ -654,6 +637,4 @@ appended to their name.
 
 
 
-
- 
 
